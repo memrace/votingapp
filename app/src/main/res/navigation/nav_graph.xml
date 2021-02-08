@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/votingFragment">
+
+    <fragment
+        android:id="@+id/votingFragment"
+        android:name="com.northis.votingapp.voting.VotingFragment"
+        android:label="Голосование"
+        tools:layout="@layout/fragment_voting">
+        <action
+            android:id="@+id/action_votingFragment_to_scheduleFragment"
+            app:destination="@id/scheduleFragment"
+            app:enterAnim="@android:anim/slide_out_right"
+            app:exitAnim="@android:anim/slide_in_left" />
+        <action
+            android:id="@+id/action_votingFragment_to_catalogFragment"
+            app:destination="@id/catalogFragment"
+            app:enterAnim="@android:anim/slide_out_right"
+            app:exitAnim="@android:anim/slide_in_left" />
+        <action
+            android:id="@+id/action_votingFragment_to_votingDetailes"
+            app:destination="@id/votingDetailes"
+            app:enterAnim="@android:anim/slide_out_right"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left" />
+    </fragment>
+    <fragment
+        android:id="@+id/catalogFragment"
+        android:name="com.northis.votingapp.catalog.CatalogFragment"
+        android:label="Каталог"
+        tools:layout="@layout/fragment_catalog">
+        <action
+            android:id="@+id/action_catalogFragment_to_scheduleFragment"
+            app:destination="@id/scheduleFragment"
+            app:enterAnim="@android:anim/slide_out_right"
+            app:exitAnim="@android:anim/slide_in_left" />
+        <action
+            android:id="@+id/action_catalogFragment_to_votingFragment"
+            app:destination="@id/votingFragment"
+            app:enterAnim="@android:anim/slide_out_right"
+            app:exitAnim="@android:anim/slide_in_left" />
+    </fragment>
+    <fragment
+        android:id="@+id/scheduleFragment"
+        android:name="com.northis.votingapp.schedule.ScheduleFragment"
+        android:label="Расписание"
+        tools:layout="@layout/fragment_schedule">
+        <action
+            android:id="@+id/action_scheduleFragment_to_catalogFragment"
+            app:destination="@id/catalogFragment"
+            app:enterAnim="@android:anim/slide_out_right"
+            app:exitAnim="@android:anim/slide_in_left" />
+        <action
+            android:id="@+id/action_scheduleFragment_to_votingFragment"
+            app:destination="@id/votingFragment"
+            app:enterAnim="@android:anim/slide_out_right"
+            app:exitAnim="@android:anim/slide_in_left" />
+    </fragment>
+    <fragment
+        android:id="@+id/votingDetailes"
+        android:name="com.northis.votingapp.voting.VotingDetails"
+        android:label="О голосовании"
+        tools:layout="@layout/fragment_voting_details">
+        <action
+            android:id="@+id/action_votingDetailes_to_votingFragment"
+            app:destination="@id/votingFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right" />
+    </fragment>
+</navigation>
