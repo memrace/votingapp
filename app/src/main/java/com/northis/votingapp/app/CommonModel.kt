@@ -8,12 +8,11 @@ import retrofit2.http.Path
 import java.util.*
 import javax.inject.Inject
 
-// TODO DECORATOR!!!
 
 private const val SERVICE = "profiles/"
 
 class CommonModel @Inject constructor(private val profileApi: IProfileApi, private val authorizationModel: AuthorizationModel) {
-
+  val imageResourceUrl: String get() = "https://192.168.100.8:5001"
   suspend fun loadUser(id: String): IdentityUser? {
     return profileApi.getUser(id).body()
   }

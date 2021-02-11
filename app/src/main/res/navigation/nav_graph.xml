@@ -24,8 +24,7 @@
             android:id="@+id/action_votingFragment_to_votingDetailes"
             app:destination="@id/votingDetailes"
             app:enterAnim="@android:anim/slide_out_right"
-            app:exitAnim="@android:anim/slide_out_right"
-            app:popEnterAnim="@android:anim/slide_in_left" />
+            app:exitAnim="@android:anim/slide_in_left" />
     </fragment>
     <fragment
         android:id="@+id/catalogFragment"
@@ -67,7 +66,7 @@
         <action
             android:id="@+id/action_votingDetailes_to_votingFragment"
             app:destination="@id/votingFragment"
-            app:enterAnim="@android:anim/slide_in_left"
-            app:exitAnim="@android:anim/slide_out_right" />
+            app:enterAnim="@android:anim/slide_out_right"
+            app:exitAnim="@android:anim/slide_in_left" />
     </fragment>
 </navigation>
