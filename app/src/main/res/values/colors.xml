@@ -10,4 +10,6 @@
     <color name="ended">#FF0000</color>
     <color name="notVoted">#797979</color>
     <color name="voted">#4CAF50</color>
+    <color name="userVoted">#B22196F3</color>
+    <color name="userNotVoted">#B2A2A2A2</color>
 </resources>

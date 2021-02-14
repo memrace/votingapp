@@ -8,6 +8,10 @@
         <variable
             name="votingSpeech"
             type="com.northis.votingapp.voting.VotingModel.VotingSpeech" />
+
+        <variable
+            name="voting"
+            type="com.northis.votingapp.voting.VotingModel.Voting" />
     </data>
 
     <LinearLayout
@@ -18,22 +22,23 @@
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cv_speech_in_voting"
             android:layout_width="match_parent"
-            android:layout_height="70dp">
+            android:layout_height="70dp"
+            android:layout_margin="8dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <ProgressBar
-                    android:id="@+id/pb_voting"
-                    style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginEnd="24dp"
+                <TextView
+                    android:id="@+id/tv_progress_bar"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:progressBar="@{voting.hasUserVoted}"
+                    app:totalVotes="@{voting.totalVotes}"
+                    app:votesPercentage="@{votingSpeech}" />
 
                 <RadioButton
                     android:id="@+id/rb_vote"
@@ -41,6 +46,7 @@
                     android:layout_height="30dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="16dp"
+                    android:clickable="false"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -49,74 +55,85 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:text="{votingSpeech.speech.theme}"
+                    android:layout_marginTop="8dp"
+                    android:text="@{votingSpeech.speech.theme}"
                     android:textAlignment="viewStart"
+                    android:textSize="18sp"
                     android:textStyle="bold"
-                    app:layout_constraintBaseline_toBaselineOf="@+id/rb_vote"
-                    app:layout_constraintStart_toEndOf="@+id/rb_vote" />
+                    app:layout_constraintStart_toEndOf="@+id/rb_vote"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/tv_creator"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="(Alexandr Sozonov)"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="@{votingSpeech.speech.creator.firstName + ` ` + votingSpeech.speech.creator.lastName}"
                     android:textAlignment="viewStart"
                     android:textSize="12sp"
-                    app:layout_constraintBaseline_toBaselineOf="@+id/tv_theme"
-                    app:layout_constraintStart_toEndOf="@+id/tv_theme" />
+                    app:layout_constraintEnd_toStartOf="@+id/constraintLayout"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_theme" />
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cv_users"
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_marginTop="8dp"
+
+                <TextView
+                    android:id="@+id/tv_speech_vote_percentage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    app:VotedVisibility="@{voting.hasUserVoted}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:totalVotes="@{voting.totalVotes}"
+                    app:votesPercentage="@{votingSpeech}" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraintLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    app:VotedVisibility="@{voting.hasUserVoted}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                    <ImageView
+                        android:id="@+id/iv_user_1"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/iv_user_2"
+                        tools:srcCompat="@tools:sample/avatars" />
 
-                        <ImageView
-                            android:id="@+id/iv_user_1"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toStartOf="@+id/iv_user_2"
-                            tools:srcCompat="@tools:sample/avatars" />
+                    <ImageView
+                        android:id="@+id/iv_user_2"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/iv_user_3"
+                        tools:srcCompat="@tools:sample/avatars" />
 
-                        <ImageView
-                            android:id="@+id/iv_user_2"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toStartOf="@+id/iv_user_3"
-                            tools:srcCompat="@tools:sample/avatars" />
+                    <ImageView
+                        android:id="@+id/iv_user_3"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginEnd="8dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/tv_total_votes"
+                        tools:srcCompat="@tools:sample/avatars" />
 
-                        <ImageView
-                            android:id="@+id/iv_user_3"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:layout_marginEnd="8dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toStartOf="@+id/tv_total_votes"
-                            tools:srcCompat="@tools:sample/avatars" />
-
-                        <TextView
-                            android:id="@+id/tv_total_votes"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:layout_marginEnd="8dp"
-                            android:text="0"
-                            android:textAlignment="center"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                </androidx.cardview.widget.CardView>
+                    <TextView
+                        android:id="@+id/tv_total_votes"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:textAlignment="center"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:totalSpeechVote="@{votingSpeech.users.size}" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

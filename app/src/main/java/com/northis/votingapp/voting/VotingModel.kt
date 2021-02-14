@@ -1,6 +1,5 @@
 package com.northis.votingapp.voting
 
-import android.util.Log
 import com.northis.votingapp.app.CommonModel
 import retrofit2.Response
 import retrofit2.http.*
@@ -24,15 +23,11 @@ class VotingModel @Inject constructor(private val votingApi: IVotingApi) {
   }
 
   suspend fun getVoting(votingId: String): Response<Voting> {
-    val data = votingApi.getVoting(votingId)
-    Log.d("voting", data.code().toString())
-    return data
+    return votingApi.getVoting(votingId)
   }
 
   suspend fun getVotingList(): Response<ArrayList<Voting>> {
-    val data = votingApi.getVotingList()
-    Log.d("votings", data.code().toString())
-    return data
+    return votingApi.getVotingList()
   }
 
   suspend fun removeVote(votingId: String, userId: String): Response<Unit> {
@@ -77,7 +72,7 @@ class VotingModel @Inject constructor(private val votingApi: IVotingApi) {
     val TotalVotes: Int,
     val VotingId: UUID,
     val VotingSpeeches: ArrayList<VotingSpeech>,
-    val HasEnded: Boolean = if (EndDate == null) false else EndDate < StartDate
+    val HasEnded: Boolean? = if (EndDate == null) null else EndDate < Date()
   )
 
   data class VotingSpeech(

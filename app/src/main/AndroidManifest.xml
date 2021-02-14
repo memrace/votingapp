@@ -12,7 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:windowSoftInputMode="adjustPan"
-        android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar">
+        android:theme="@style/Theme.VotingApp">
         <activity android:name=".authorization.AuthorizationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

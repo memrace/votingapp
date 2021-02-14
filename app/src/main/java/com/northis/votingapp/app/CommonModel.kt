@@ -1,7 +1,8 @@
 package com.northis.votingapp.app
 
+import android.content.Context
 import com.northis.votingapp.authorization.AuthorizationModel
-import com.northis.votingapp.authorization.IAuthorizationEventHandler
+import com.northis.votingapp.authorization.IUserManager
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -11,8 +12,9 @@ import javax.inject.Inject
 
 private const val SERVICE = "profiles/"
 
-class CommonModel @Inject constructor(private val profileApi: IProfileApi, private val authorizationModel: AuthorizationModel) {
+class CommonModel @Inject constructor(private val context: Context, private val profileApi: IProfileApi, private val authorizationModel: AuthorizationModel) {
   val imageResourceUrl: String get() = "https://192.168.100.8:5001"
+  val userId: String get() = IUserManager.instance.getUserId(context)
   suspend fun loadUser(id: String): IdentityUser? {
     return profileApi.getUser(id).body()
   }

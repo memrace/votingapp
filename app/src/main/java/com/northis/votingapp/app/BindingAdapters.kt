@@ -1,35 +1,35 @@
 package com.northis.votingapp.app
 
 
-import android.annotation.SuppressLint
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.northis.votingapp.R
+import com.northis.votingapp.voting.VotingModel
+import java.text.SimpleDateFormat
 import java.util.*
 
 
 @BindingAdapter("app:timeHasLeft")
 fun setTimeHasLeft(view: TextView, date: Date?) {
   if (date != null) {
-    if (date < Date()) {
+    if (date.time < Date().time) {
       view.text = ""
       view.setBackgroundResource(R.color.ended)
     } else view.text = getTimeHasLeft(date)
   } else view.text = "NA"
 }
 
-@BindingAdapter("app:totalVoteAmount")
+@BindingAdapter("app:totalVotingVote")
 fun setTotalVoteAmount(view: TextView, amount: Int) {
   view.text = amount.toString()
 }
 
 @BindingAdapter("app:hasUserVoted")
-fun setColorBackground(view: TextView, flag: Boolean) {
-  if (flag) view.setBackgroundResource(R.color.voted) else view.setBackgroundResource(R.color.notVoted)
+fun setColorBackground(view: TextView, hasUserVoted: Boolean) {
+  if (hasUserVoted) view.setBackgroundResource(R.color.voted) else view.setBackgroundResource(R.color.notVoted)
 }
 
 @BindingAdapter("app:busyMode")
@@ -45,9 +45,50 @@ fun setBusyLoader(view: View, flag: LiveData<Boolean>) {
       else -> view.visibility = View.VISIBLE
     }
   }
+}
+
+@BindingAdapter("app:progressBar", "app:votesPercentage", "app:totalVotes", requireAll = true)
+fun setColorProgressBar(view: TextView, flag: Boolean, votingSpeech: VotingModel.VotingSpeech, totalVotes: Int) {
+  val percent = ((votingSpeech.Users.size.toDouble() / totalVotes.toDouble()) * 100).toInt()
+  view.background = null
+  val layoutParamsMP = view.layoutParams
+  layoutParamsMP.width = -1
+  view.layoutParams = layoutParamsMP
+  view.post {
+    var width = view.width
+    val layoutParams = view.layoutParams
+    layoutParams.width = width * percent / 100
+    view.layoutParams = layoutParams
+  }
+  when (true) {
+    flag && votingSpeech.HasUserVoted -> view.setBackgroundResource(R.color.userVoted)
+    flag && !votingSpeech.HasUserVoted -> view.setBackgroundResource(R.color.userNotVoted)
+    !flag -> view.background = null
+  }
+
 
 }
 
+@BindingAdapter(value = ["app:votesPercentage", "app:totalVotes"], requireAll = true)
+fun setSpeechVotePercentage(view: TextView, votingSpeech: VotingModel.VotingSpeech, totalVotes: Int) {
+  val percent = ((votingSpeech.Users.size.toDouble() / totalVotes.toDouble()) * 100).toInt()
+  if (totalVotes != 0) view.text = "$percent %" else view.text = "0 %"
+}
+
+@BindingAdapter("app:VotedVisibility")
+fun setViewVisibility(view: View, flag: Boolean) {
+  if (flag) view.visibility = View.VISIBLE else view.visibility = View.INVISIBLE
+}
+
+@BindingAdapter("app:votingEndDate")
+fun setVotingEndDate(view: TextView, date: Date?) {
+  if (date == null) view.text = "Голосование не начато" else view.text = "До " + SimpleDateFormat("dd.MM.yyy").format(date)
+}
+
+@BindingAdapter("app:totalSpeechVote")
+fun setSpeechTotalVotes(view: TextView, amount: Int) {
+  view.text = amount.toString()
+}
 
 private fun getTimeHasLeft(date: Date): String {
   val currentDate = Date().time

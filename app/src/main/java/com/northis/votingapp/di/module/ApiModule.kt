@@ -8,12 +8,14 @@ import com.google.gson.GsonBuilder
 import com.northis.votingapp.app.CommonModel
 import com.northis.votingapp.authorization.IUserManager
 import com.northis.votingapp.authorization.UnsafeConnection
+import com.northis.votingapp.catalog.CatalogModel
 import com.northis.votingapp.voting.VotingModel
 import dagger.Module
 import dagger.Provides
 import okhttp3.Cache
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -47,6 +49,8 @@ class ApiModule(private val baseUrl: String) {
     userManager: IUserManager
   ): OkHttpClient {
     val client = OkHttpClient.Builder()
+    val httpLoggingInterceptor = HttpLoggingInterceptor()
+    httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
     with(client) {
       sslSocketFactory(
         UnsafeConnection.getSslSocketFactory(),
@@ -54,6 +58,7 @@ class ApiModule(private val baseUrl: String) {
       )
       hostnameVerifier { _, _ -> true }
       cache(cache)
+      addInterceptor(httpLoggingInterceptor)
       addInterceptor(Interceptor { chain ->
         val request = chain.request()
         val newRequest = request
@@ -92,10 +97,10 @@ class ApiModule(private val baseUrl: String) {
     return retrofit.create(VotingModel.IVotingApi::class.java)
   }
 
-//  @Provides
-//  @Singleton
-//  fun provideCatalogApi(retrofit: Retrofit):  {
-//    return retrofit.create(ICatalogService::class.java)
-//  }
+  @Provides
+  @Singleton
+  fun provideCatalogApi(retrofit: Retrofit): CatalogModel.ICatalogApi {
+    return retrofit.create(CatalogModel.ICatalogApi::class.java)
+  }
 
 }

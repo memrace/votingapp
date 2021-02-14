@@ -4,9 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RadioButton
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.card.MaterialCardView
 import com.northis.votingapp.app.AppActivity
 import com.northis.votingapp.databinding.FragmentVotingDetailsBinding
 import com.northis.votingapp.databinding.SpeechInVotingListViewHolderBinding
@@ -15,6 +18,7 @@ class VotingDetails : Fragment() {
   private var _binding: FragmentVotingDetailsBinding? = null
   private val binding get() = _binding!!
   private lateinit var viewModel: VotingViewModel
+  private lateinit var votingSpeechesAdapter: VotingSpeechesAdapter
   override fun onCreateView(
     inflater: LayoutInflater, container: ViewGroup?,
     savedInstanceState: Bundle?
@@ -26,34 +30,55 @@ class VotingDetails : Fragment() {
       lifecycleOwner = this@VotingDetails
       executePendingBindings()
     }
+    votingSpeechesAdapter = VotingSpeechesAdapter()
     return binding.root
   }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
     viewModel.loading.value = true
+    updateUI()
     viewModel.loadVoting().observe(viewLifecycleOwner, {
       viewModel.loading.value = false
-      binding.tvEndDate.text = if (it.EndDate != null) it.EndDate.toString() else "Голосование не начато"
+      votingSpeechesAdapter.voting = it
       binding.rvVotingDetails.apply {
-        adapter = VotingSpeechesAdapter(it)
-        layoutManager = LinearLayoutManager(context)
-        setHasFixedSize(true)
+	adapter = votingSpeechesAdapter
+	layoutManager = LinearLayoutManager(context)
+	setHasFixedSize(true)
       }
     })
   }
+
 
   override fun onDestroyView() {
     super.onDestroyView()
     _binding = null
   }
 
-  private inner class VotingSpeechesAdapter(private val voting: VotingModel.Voting) : RecyclerView.Adapter<VotingSpeechesAdapter.VotingSpeechesViewHolder>() {
+  private fun updateUI() {
+    viewModel.updateUi.observe(viewLifecycleOwner, { it ->
+      if (it) {
+	viewModel.loadVoting().observe(viewLifecycleOwner, {
+	  votingSpeechesAdapter.voting = it
+	  votingSpeechesAdapter.notifyDataSetChanged()
+	  viewModel.updateUi.value = false
+	})
+      }
+    })
+  }
+
+  private inner class VotingSpeechesAdapter() : RecyclerView.Adapter<VotingSpeechesAdapter.VotingSpeechesViewHolder>() {
+    lateinit var voting: VotingModel.Voting
+
     private inner class VotingSpeechesViewHolder(private val itemBinding: SpeechInVotingListViewHolderBinding) : RecyclerView.ViewHolder(itemBinding.root) {
+      val voteButton: RadioButton = itemBinding.rbVote
+      val container: MaterialCardView = itemBinding.cvSpeechInVoting
       fun bind(speech: VotingModel.VotingSpeech) {
 	itemBinding.votingSpeech = speech
+	itemBinding.voting = voting
 	itemBinding.executePendingBindings()
       }
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VotingSpeechesViewHolder {
@@ -62,60 +87,29 @@ class VotingDetails : Fragment() {
     }
 
     override fun onBindViewHolder(holder: VotingSpeechesViewHolder, position: Int) {
-      val speech = voting.VotingSpeeches[position]
-      holder.bind(speech)
-//      holder.apply {
-//	tvTheme.text = speech.Speech.Theme
-//	tvCreator.text = "(${speech.Speech.Creator.FirstName} ${speech.Speech.Creator.LastName})"
-//	when (speech.Users.size) {
-//	  0 -> {
-//	  }
-//	  1 -> {
-//	    Glide
-//	      .with(context!!)
-//	      .load(viewModel.imageResourceUrl + speech.Users[0].ImageUrl)
-//	      .circleCrop()
-//	      .placeholder(R.drawable.ic_person_24px)
-//	      .into(ivUser1)
-//	  }
-//	  2 -> {
-//	    Glide
-//	      .with(context!!)
-//	      .load(viewModel.imageResourceUrl + speech.Users[0].ImageUrl)
-//	      .circleCrop()
-//	      .placeholder(R.drawable.ic_person_24px)
-//	      .into(ivUser1)
-//	    Glide
-//	      .with(context!!)
-//	      .load(viewModel.imageResourceUrl + speech.Users[1].ImageUrl)
-//	      .circleCrop()
-//	      .placeholder(R.drawable.ic_person_24px)
-//	      .into(ivUser2)
-//	  }
-//	  else -> {
-//	    Glide
-//	      .with(context!!)
-//	      .load(viewModel.imageResourceUrl + speech.Users[0].ImageUrl)
-//	      .circleCrop()
-//	      .placeholder(R.drawable.ic_person_24px)
-//	      .into(ivUser1)
-//	    Glide
-//	      .with(context!!)
-//	      .load(viewModel.imageResourceUrl + speech.Users[1].ImageUrl)
-//	      .circleCrop()
-//	      .placeholder(R.drawable.ic_person_24px)
-//	      .into(ivUser2)
-//	    Glide
-//	      .with(context!!)
-//	      .load(viewModel.imageResourceUrl + speech.Users[2].ImageUrl)
-//	      .circleCrop()
-//	      .placeholder(R.drawable.ic_person_24px)
-//	      .into(ivUser3)
-//	  }
-//	}
-//	tvTotalVotes.text = speech.Users.size.toString()
-//
-//      }
+      voting.VotingSpeeches[position].also { it ->
+	val speechId = it.Speech.SpeechId.toString()
+	holder.bind(it)
+	with(holder.container) {
+	  val btn = holder.voteButton
+	  btn.isChecked = it.HasUserVoted
+	  setOnClickListener {
+	    if (btn.isChecked) {
+	      viewModel.unVoteForSpeech(speechId).observe(viewLifecycleOwner, { it ->
+		val message: String = if (it) "Голос отменен" else "Произошла ошибки..."
+		Toast.makeText(context, "$message", Toast.LENGTH_SHORT).also { it.show() }
+		viewModel.updateUi.value = true
+	      })
+	    } else {
+	      viewModel.voteForSpeech(speechId).observe(viewLifecycleOwner, { it ->
+		val message: String = if (it) "Голос принят" else "Произошла ошибки..."
+		Toast.makeText(context, "$message", Toast.LENGTH_SHORT).also { it.show() }
+		viewModel.updateUi.value = true
+	      })
+	    }
+	  }
+	}
+      }
     }
 
     override fun getItemCount(): Int {

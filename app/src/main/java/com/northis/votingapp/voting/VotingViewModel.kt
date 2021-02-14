@@ -13,9 +13,24 @@ class VotingViewModel(private val votingModel: VotingModel, private val commonMo
 
   val imageResourceUrl: String get() = commonModel.imageResourceUrl
   val loading: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
+  val updateUi: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
   var votingDetails: VotingModel.Voting? = null
-  private val voting get() = votingDetails!!
+  val voting get() = votingDetails!!
 
+
+  fun voteForSpeech(speechId: String) = liveData(Dispatchers.IO) {
+    val result = commonModel.handleAuthorityResponse {
+      votingModel.addVote(voting.VotingId.toString(), VotingModel.UserVote(speechId, commonModel.userId))
+    }
+    emit(result.isSuccessful)
+  }
+
+  fun unVoteForSpeech(speechId: String) = liveData(Dispatchers.IO) {
+    val result = commonModel.handleAuthorityResponse {
+      votingModel.removeVote(voting.VotingId.toString(), commonModel.userId)
+    }
+    emit(result.isSuccessful)
+  }
 
   fun loadVotingList() = liveData(Dispatchers.IO) {
     val result = commonModel.handleAuthorityResponse {

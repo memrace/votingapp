@@ -13,6 +13,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#E1E1E1"
         tools:context=".voting.VotingFragment">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -23,6 +24,7 @@
                 android:id="@+id/rv_voting_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="8dp"
                 app:busyMode="@{viewmodel.loading}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

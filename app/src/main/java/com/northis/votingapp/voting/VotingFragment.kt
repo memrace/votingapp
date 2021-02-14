@@ -1,7 +1,6 @@
 package com.northis.votingapp.voting
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,7 +36,6 @@ class VotingFragment : Fragment() {
     viewModel.loading.value = true
     viewModel.loadVotingList().observe(viewLifecycleOwner, {
       viewModel.loading.value = false
-      Log.d("data", it.toString())
       if (it != null) {
         binding.rvVotingList.apply {
           adapter = VotingListAdapter(it)
@@ -73,7 +71,6 @@ class VotingFragment : Fragment() {
       holder.bind(voting)
       holder.layout.setOnClickListener {
 	viewModel.votingDetails = voting
-	Log.d("click", "click")
 	viewModel.loading.value = false
 	(activity as AppActivity).navController.navigate(R.id.action_votingFragment_to_votingDetailes)
       }
