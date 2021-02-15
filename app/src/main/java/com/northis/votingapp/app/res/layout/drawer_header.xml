@@ -28,7 +28,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:profilePic="@{`https://192.168.100.8:5001/Files/7b3d79d72b4e0b9b135ad8468cb609b37d7c4cd2.webp`}"
+            app:profilePic="@{`https://192.168.100.8:5001` + user.imageUrl}"
             tools:srcCompat="@tools:sample/avatars[11]" />
 
         <ImageButton
