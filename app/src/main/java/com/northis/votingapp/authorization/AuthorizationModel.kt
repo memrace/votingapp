@@ -1,6 +1,7 @@
 package com.northis.votingapp.authorization
 
 import android.content.Context
+import android.content.Intent
 import android.media.DeniedByServerException
 import android.net.Uri
 import android.net.http.SslError
@@ -76,6 +77,11 @@ class AuthorizationModel @Inject constructor(
 	e.message?.let { Log.e("Fatal Connection", it) }
 	throw DeniedByServerException("Не удалось подключиться к серверу авторизации.")
       }
+    }
+
+    fun signOut() {
+      userManager.deleteUser(context)
+      context.startActivity(Intent(context, AuthorizationActivity::class.java))
     }
 
     private fun getAuthApi(): IAuthenticationApiService {
@@ -184,6 +190,7 @@ class AuthorizationModel @Inject constructor(
       browser.settings.useWideViewPort = true
       browser.settings.javaScriptEnabled = true
       browser.loadUrl(uri.toString())
+      browser.clearCache(true)
       Log.d("Request Access Token", "Запрос на получение токена.")
     }
 

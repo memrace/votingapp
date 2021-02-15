@@ -2,14 +2,22 @@ package com.northis.votingapp.app
 
 
 import android.view.View
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.LiveData
+import coil.Coil
+import coil.ImageLoader
+import coil.load
+import coil.transform.CircleCropTransformation
 import com.northis.votingapp.R
+import com.northis.votingapp.authorization.UnsafeConnection
 import com.northis.votingapp.voting.VotingModel
+import okhttp3.OkHttpClient
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.net.ssl.X509TrustManager
 
 
 @BindingAdapter("app:timeHasLeft")
@@ -25,6 +33,27 @@ fun setTimeHasLeft(view: TextView, date: Date?) {
 @BindingAdapter("app:totalVotingVote")
 fun setTotalVoteAmount(view: TextView, amount: Int) {
   view.text = amount.toString()
+}
+
+@BindingAdapter("app:profilePic")
+fun setProfilePicture(view: ImageView, path: String?) {
+  if (path != null) {
+    //TODO СУКА БЛЯТЬ ЕБАННЫЕ СЕРТИФИКАТЫ ГОРИТЕ В АДУ!!!!!!!!!!!
+    Coil.setImageLoader(ImageLoader.Builder(view.context).okHttpClient {
+      with(OkHttpClient.Builder()) {
+        sslSocketFactory(
+          UnsafeConnection.getSslSocketFactory(),
+          UnsafeConnection.getTrustAllCerts()[0] as X509TrustManager
+        )
+        hostnameVerifier { _, _ -> true }
+      }.build()
+    }.build())
+    view.load(path) {
+      crossfade(true)
+      placeholder(R.drawable.ic_person_24px)
+      transformations(CircleCropTransformation())
+    }
+  }
 }
 
 @BindingAdapter("app:hasUserVoted")

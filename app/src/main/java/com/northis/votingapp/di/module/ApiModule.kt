@@ -34,7 +34,7 @@ class ApiModule(private val baseUrl: String) {
   fun provideGson(): Gson {
     val gsonBuilder = GsonBuilder()
     with(gsonBuilder) {
-      setDateFormat("yyyy-MM-dd")
+      setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
       setFieldNamingPolicy(FieldNamingPolicy.IDENTITY)
     }
 

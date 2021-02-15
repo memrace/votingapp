@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+
+        <item
+
+            android:id="@+id/mySpeeches"
+
+            android:title="Мои доклады" />
+
+        <item
+
+            android:id="@+id/myStatistic"
+
+            android:title="Моя статистика" />
+
+        <item
+
+            android:id="@+id/mySchedule"
+
+            android:title="Мой календарь" />
+
+    </group>
+
+    <item android:title="Аккаунт">
+
+        <menu>
+
+            <item
+
+                android:id="@+id/nav_sing_out"
+
+                android:icon="@drawable/ic_logout_24px"
+
+                android:title="Выход" />
+
+        </menu>
+
+    </item>
+
+
+</menu>

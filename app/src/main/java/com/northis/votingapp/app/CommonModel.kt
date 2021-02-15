@@ -13,14 +13,17 @@ import javax.inject.Inject
 private const val SERVICE = "profiles/"
 
 class CommonModel @Inject constructor(private val context: Context, private val profileApi: IProfileApi, private val authorizationModel: AuthorizationModel) {
-  val imageResourceUrl: String get() = "https://192.168.100.8:5001"
   val userId: String get() = IUserManager.instance.getUserId(context)
-  suspend fun loadUser(id: String): IdentityUser? {
-    return profileApi.getUser(id).body()
+  suspend fun loadUser(): IdentityUser {
+    return handleAuthorityResponse {
+      profileApi.getUser(userId)
+    }.body()!!
   }
 
   suspend fun loadUsers(): ArrayList<IdentityUser>? {
-    return profileApi.getUsers().body()
+    return handleAuthorityResponse {
+      profileApi.getUsers()
+    }.body()
   }
 
   suspend fun <T> handleAuthorityResponse(request: suspend () -> Response<T>): Response<T> {

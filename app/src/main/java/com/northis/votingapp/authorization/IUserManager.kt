@@ -28,6 +28,13 @@ interface IUserManager {
     fun getRefreshToken(context: Context): String?
     fun setExpirationDate(context: Context, expiresIn: Long)
     fun isExpiredToken(context: Context): Boolean
+    fun deleteUser(context: Context) {
+        val sharedPreferences = getStorage(context)
+        with(sharedPreferences.edit()){
+            putString(StorageValuesEnum.ACCESS_TOKEN.toString(), null)
+            putString(StorageValuesEnum.REFRESH_TOKEN.toString(), null)
+        }
+    }
     fun saveUserId(context: Context, idToken: String) {
         val jwt = JWT(idToken)
         val sharedPreferences = getStorage(context)

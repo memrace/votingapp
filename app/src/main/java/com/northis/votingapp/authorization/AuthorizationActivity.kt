@@ -59,6 +59,7 @@ class AuthorizationActivity : AppCompatActivity(), IAuthorizationEventHandler {
     startActivity(Intent(this, AppActivity::class.java))
   }
 
+
   override fun onAuthorizationBegin() {
     _binding.txtWelcome.visibility = View.GONE
     _binding.progressBar.visibility = View.GONE

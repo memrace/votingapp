@@ -11,7 +11,6 @@ import javax.inject.Inject
 
 class VotingViewModel(private val votingModel: VotingModel, private val commonModel: CommonModel) : ViewModel() {
 
-  val imageResourceUrl: String get() = commonModel.imageResourceUrl
   val loading: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
   val updateUi: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
   var votingDetails: VotingModel.Voting? = null
