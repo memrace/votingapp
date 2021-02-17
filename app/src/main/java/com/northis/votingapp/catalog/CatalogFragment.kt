@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.northis.votingapp.R
+import com.northis.votingapp.app.AppActivity
 
 
 class CatalogFragment : Fragment() {
@@ -15,6 +16,7 @@ class CatalogFragment : Fragment() {
     savedInstanceState: Bundle?
   ): View? {
     // Inflate the layout for this fragment
+    (activity as AppActivity).showSearch(true)
     return inflater.inflate(R.layout.fragment_catalog, container, false)
   }
 

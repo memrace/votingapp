@@ -1,6 +1,8 @@
 package com.northis.votingapp.app
 
 import android.os.Bundle
+import android.view.Menu
+import android.widget.Toolbar
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -53,7 +55,6 @@ class AppActivity : AppCompatActivity() {
     navController = Navigation.findNavController(this, R.id.nav_host)
     navigationView = binding.bottomNavigation
     topAppBar = binding.topAppBar
-    setSupportActionBar(topAppBar)
     val drawer = binding.drawerLayout
     bindingDrawerHeaderBinding = DrawerHeaderBinding.bind(binding.navView.inflateHeaderView(R.layout.drawer_header))
     appViewModel.loadUser().observe(this, {
@@ -126,6 +127,9 @@ class AppActivity : AppCompatActivity() {
     navigationView.setupWithNavController(navController)
   }
 
+ fun showSearch(flag: Boolean){
+   topAppBar.menu.findItem(R.id.app_bar_search).isVisible = flag
+ }
   override fun onBackPressed() {
     appViewModel.logout
   }

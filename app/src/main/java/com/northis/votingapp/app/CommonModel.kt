@@ -52,7 +52,8 @@ class CommonModel @Inject constructor(private val context: Context, private val 
     val Status: String?,
     val SpeechDate: Date?,
     val SourceLinks: String?,
-    val Executor: IdentityUser?
+    val Executor: IdentityUser?,
+    val IsCompleted: Boolean?
   )
 
   interface IProfileApi {

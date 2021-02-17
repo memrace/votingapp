@@ -25,6 +25,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:navigationIcon="@drawable/ic_menu_24px"
+                app:menu="@menu/appbar_menu"
                 app:title="" />
         </com.google.android.material.appbar.AppBarLayout>
 

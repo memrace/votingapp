@@ -31,6 +31,7 @@ class VotingDetails : Fragment() {
       executePendingBindings()
     }
     votingSpeechesAdapter = VotingSpeechesAdapter()
+    (activity as AppActivity).showSearch(false)
     return binding.root
   }
 

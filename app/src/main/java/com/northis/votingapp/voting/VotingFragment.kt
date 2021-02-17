@@ -1,9 +1,7 @@
 package com.northis.votingapp.voting
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -28,6 +26,7 @@ class VotingFragment : Fragment() {
     binding.viewmodel = viewModel
     binding.lifecycleOwner = this
     binding.executePendingBindings()
+    (activity as AppActivity).showSearch(false)
     return binding.root
   }
 
@@ -44,13 +43,13 @@ class VotingFragment : Fragment() {
         }
       }
     })
+
   }
 
   override fun onDestroyView() {
     super.onDestroyView()
     _binding = null
   }
-
 
   private inner class VotingListAdapter(private val votingList: ArrayList<VotingModel.Voting>) : RecyclerView.Adapter<VotingListAdapter.VotingListViewHolder>() {
     private inner class VotingListViewHolder(private val itemBinding: VotingListViewHolderBinding) : RecyclerView.ViewHolder(itemBinding.root) {

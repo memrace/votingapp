@@ -123,10 +123,16 @@ private fun getTimeHasLeft(date: Date): String {
   val currentDate = Date().time
   val timeLeft = date.time - currentDate
   val d = timeLeft / 86400000
-  val h = d / 3600000
-  val m = h / 60000
+  var h = 0L
+  var m = 0L
+  if (d == 0L) {
+    h = timeLeft / 3600000
+    if (h == 0L) m = timeLeft / 60000
+  }
   return when (true) {
-    timeLeft > 0 -> "$d Д."
-    else -> if (h > 0) "$h Ч." else "$m Мин."
+    d > 0 -> "$d Д."
+    h > 0 -> "$h Ч."
+    m > 0 -> "$m М."
+    else -> "NA"
   }
 }
