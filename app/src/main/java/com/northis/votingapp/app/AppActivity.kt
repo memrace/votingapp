@@ -1,8 +1,6 @@
 package com.northis.votingapp.app
 
 import android.os.Bundle
-import android.view.Menu
-import android.widget.Toolbar
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -13,11 +11,13 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.northis.votingapp.R
+import com.northis.votingapp.catalog.CatalogViewModel
+import com.northis.votingapp.catalog.CatalogViewModelFactory
 import com.northis.votingapp.databinding.ActivityAppBinding
 import com.northis.votingapp.databinding.DrawerHeaderBinding
 import com.northis.votingapp.di.App
 import com.northis.votingapp.di.component.ActivityComponent
-import com.northis.votingapp.voting.VotingViewModel
+import com.northis.votingapp.voting.VotingIViewModel
 import com.northis.votingapp.voting.VotingViewModelFactory
 import javax.inject.Inject
 
@@ -39,11 +39,15 @@ class AppActivity : AppCompatActivity() {
   // VM
   @Inject
   internal lateinit var votingViewModelFactory: VotingViewModelFactory
-  val votingViewModel: VotingViewModel by viewModels(factoryProducer = { votingViewModelFactory })
+  val votingViewModel: VotingIViewModel by viewModels(factoryProducer = { votingViewModelFactory })
+
+  @Inject
+  internal lateinit var catalogViewModelFactory: CatalogViewModelFactory
+  val catalogViewModel: CatalogViewModel by viewModels(factoryProducer = { catalogViewModelFactory })
 
   @Inject
   internal lateinit var appViewModelFactory: AppViewModelFactory
-  val appViewModel: AppViewModel by viewModels(factoryProducer = { appViewModelFactory })
+  private val appViewModel: AppViewModel by viewModels(factoryProducer = { appViewModelFactory })
 
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -127,9 +131,10 @@ class AppActivity : AppCompatActivity() {
     navigationView.setupWithNavController(navController)
   }
 
- fun showSearch(flag: Boolean){
-   topAppBar.menu.findItem(R.id.app_bar_search).isVisible = flag
- }
+  fun showSearch(flag: Boolean) {
+    topAppBar.menu.findItem(R.id.app_bar_search).isVisible = flag
+  }
+
   override fun onBackPressed() {
     appViewModel.logout
   }

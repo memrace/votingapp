@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="speech"
+            type="com.northis.votingapp.app.CommonModel.Speech" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="8dp"
+            android:clickable="true">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/tv_speech_status"
+                    android:layout_width="80dp"
+                    android:layout_height="20sp"
+                    android:layout_marginStart="8dp"
+                    android:text="@{speech.speechStatus}"
+                    android:textSize="12sp"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/tv_speech_theme"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_speech_theme"
+                    android:layout_width="150dp"
+                    android:layout_height="24sp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@{speech.theme}"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toEndOf="@+id/tv_speech_status"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_speech_description"
+                    android:layout_width="150dp"
+                    android:layout_height="20sp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@{speech.description}"
+                    app:layout_constraintStart_toEndOf="@+id/tv_speech_status"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_speech_theme" />
+
+                <TextView
+                    android:id="@+id/tv_speech_creator"
+                    android:layout_width="120dp"
+                    android:layout_height="20sp"
+                    android:text="@{speech.creator.firstName.charAt(0) + `. ` + speech.creator.lastName}"
+                    android:textAlignment="center"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/tv_speech_description"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+                <ImageView
+                    android:id="@+id/iv_speech_profile_avatar"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintBottom_toTopOf="@+id/tv_speech_creator"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/tv_speech_creator"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:profilePic="@{`https://192.168.100.8:5001` + speech.creator.imageUrl}"
+                    tools:srcCompat="@tools:sample/avatars" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
+</layout>

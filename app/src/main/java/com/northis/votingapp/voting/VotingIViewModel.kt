@@ -9,13 +9,12 @@ import com.northis.votingapp.app.CommonModel
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
-class VotingViewModel(private val votingModel: VotingModel, private val commonModel: CommonModel) : ViewModel() {
+class VotingIViewModel(private val votingModel: VotingModel, private val commonModel: CommonModel) : ViewModel() {
 
-  val loading: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
-  val updateUi: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
+  val updateUi: MutableLiveData<Boolean> = MutableLiveData<Boolean>()
+  val loading: MutableLiveData<Boolean> = MutableLiveData<Boolean>()
   var votingDetails: VotingModel.Voting? = null
   val voting get() = votingDetails!!
-
 
   fun voteForSpeech(speechId: String) = liveData(Dispatchers.IO) {
     val result = commonModel.handleAuthorityResponse {
@@ -57,6 +56,6 @@ class VotingViewModelFactory @Inject constructor(
   private val commonModel: CommonModel
 ) : ViewModelProvider.AndroidViewModelFactory(application) {
   override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-    return VotingViewModel(votingModel, commonModel) as T
+    return VotingIViewModel(votingModel, commonModel) as T
   }
 }

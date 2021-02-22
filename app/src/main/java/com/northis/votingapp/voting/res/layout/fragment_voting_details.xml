@@ -7,7 +7,7 @@
 
         <variable
             name="viewmodel"
-            type="com.northis.votingapp.voting.VotingViewModel" />
+            type="com.northis.votingapp.voting.VotingIViewModel" />
     </data>
 
     <FrameLayout

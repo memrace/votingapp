@@ -7,6 +7,8 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.LiveData
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import coil.Coil
 import coil.ImageLoader
 import coil.load
@@ -76,6 +78,11 @@ fun setBusyLoader(view: View, flag: LiveData<Boolean>) {
   }
 }
 
+@BindingAdapter("app:layoutManager")
+fun setLayoutManager(view: RecyclerView, layoutManager: Boolean) {
+  view.layoutManager = LinearLayoutManager(view.context)
+}
+
 @BindingAdapter("app:progressBar", "app:votesPercentage", "app:totalVotes", requireAll = true)
 fun setColorProgressBar(view: TextView, flag: Boolean, votingSpeech: VotingModel.VotingSpeech, totalVotes: Int) {
   val percent = ((votingSpeech.Users.size.toDouble() / totalVotes.toDouble()) * 100).toInt()
@@ -84,7 +91,7 @@ fun setColorProgressBar(view: TextView, flag: Boolean, votingSpeech: VotingModel
   layoutParamsMP.width = -1
   view.layoutParams = layoutParamsMP
   view.post {
-    var width = view.width
+    val width = view.width
     val layoutParams = view.layoutParams
     layoutParams.width = width * percent / 100
     view.layoutParams = layoutParams

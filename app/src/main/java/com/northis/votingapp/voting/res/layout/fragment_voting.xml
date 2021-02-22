@@ -4,10 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="viewmodel"
-            type="com.northis.votingapp.voting.VotingViewModel" />
+            type="com.northis.votingapp.voting.VotingIViewModel" />
     </data>
 
     <FrameLayout

@@ -1,6 +1,10 @@
 package com.northis.votingapp.catalog
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.liveData
 import com.northis.votingapp.app.CommonModel
+import com.northis.votingapp.catalog.pagination.SpeechesDataSource
 import retrofit2.Response
 import retrofit2.http.*
 import java.util.*
@@ -18,20 +22,39 @@ class CatalogModel @Inject constructor(private val catalogApi: ICatalogApi, priv
     }
   }
 
-  suspend fun loadSpeeches(
+  fun loadSpeeches(query: SpeechQuery) =
+    Pager(
+      config =
+      PagingConfig(pageSize = 20, maxSize = 100, enablePlaceholders = true),
+      pagingSourceFactory = { SpeechesDataSource(this, query) }
+    ).liveData
+
+
+  suspend fun getSpeeches(
     skip: Int? = null,
-    status: String? = SpeechStatus().InCatalog,
-    count: Int? = null,
-    minCreateDate: Date? = null,
-    maxCreateDate: Date? = null,
-    minEndDate: Date? = null,
-    maxEndDate: Date? = null,
-    executorId: String? = null,
-    creatorId: String? = null,
-    theme: String? = null
+    take: Int? = null,
+    query: SpeechQuery
   ): Response<Speeches> {
     return commonModel.handleAuthorityResponse {
-      catalogApi.getSpeeches(sort = "theme", skip, status, count, minCreateDate, maxCreateDate, minEndDate, maxEndDate, executorId, creatorId, theme)
+      queryHandler(query, skip, take)
+    }
+  }
+
+  private suspend fun queryHandler(
+    query: SpeechQuery, skip: Int? = null,
+    take: Int? = null,
+  ): Response<Speeches> {
+    val queryKey = query.getQuery().keys.first()
+    val queryValue = query.getQuery().values.first()
+    return when (queryKey) {
+      SpeechQueries.MINCREATEDATE -> catalogApi.getSpeeches(sort = "theme", skip = skip, take = take, minCreateDate = queryValue)
+      SpeechQueries.MAXCREATEDATE -> catalogApi.getSpeeches(sort = "theme", skip = skip, take = take, maxCreateDate = queryValue)
+      SpeechQueries.MINENDDATE -> catalogApi.getSpeeches(sort = "theme", skip = skip, take = take, minEndDate = queryValue)
+      SpeechQueries.MAXENDDATE -> catalogApi.getSpeeches(sort = "theme", skip = skip, take = take, maxEndDate = queryValue)
+      SpeechQueries.EXECUTOR -> catalogApi.getSpeeches(sort = "theme", skip = skip, take = take, executorId = queryValue)
+      SpeechQueries.CREATOR -> catalogApi.getSpeeches(sort = "theme", skip = skip, take = take, creatorId = queryValue)
+      SpeechQueries.THEME -> catalogApi.getSpeeches(sort = "theme", skip = skip, take = take, theme = queryValue)
+      else -> catalogApi.getSpeeches(sort = "theme", skip = skip, take = take)
     }
   }
 
@@ -53,13 +76,6 @@ class CatalogModel @Inject constructor(private val catalogApi: ICatalogApi, priv
     }
   }
 
-  // Todo обновить
-  suspend fun getCalendar(minEndDate: Date, maxEndDate: Date): Response<ArrayList<CommonModel.Speech>> {
-    return commonModel.handleAuthorityResponse {
-      catalogApi.getCalendarSpeeches(minEndDate, maxEndDate)
-    }
-  }
-
   suspend fun createSpeechInCalendar(speech: CommonModel.Speech, executorId: String, speechDate: Date): Response<CommonModel.Speech> {
     return commonModel.handleAuthorityResponse {
       catalogApi.createSpeechInCalendar(speech, executorId, speechDate.toString())
@@ -72,15 +88,26 @@ class CatalogModel @Inject constructor(private val catalogApi: ICatalogApi, priv
     }
   }
 
+  class SpeechQuery(key: SpeechQueries, value: String) {
+    private val query: Map<SpeechQueries, String> = mapOf(Pair(key, value))
+    fun getQuery(): Map<SpeechQueries, String> {
+      return query
+    }
+  }
 
-  data class SpeechStatus(
-    val InCalendar: String = "InCalendar",
-    val InCatalog: String = "InCatalog",
-    val InVoting: String = "InVoting"
-  )
+  enum class SpeechQueries(val query: String) {
+    MINCREATEDATE("minCreateDate"),
+    MAXCREATEDATE("maxCreateDate"),
+    MINENDDATE("minEndDate"),
+    MAXENDDATE("maxEndDate"),
+    EXECUTOR("executor"),
+    CREATOR("creator"),
+    THEME("theme"),
+    DEFAULT("default")
+  }
 
   data class Speeches(
-    val Speeches: ArrayList<CommonModel.Speech>,
+    val Speeches: List<CommonModel.Speech>,
     val SpeechesCount: Int
   )
 
@@ -94,14 +121,15 @@ class CatalogModel @Inject constructor(private val catalogApi: ICatalogApi, priv
       @Query("sort") sort: String,
       @Query("skip") skip: Int? = null,
       @Query("status") status: String? = null,
-      @Query("count") count: Int? = 10,
-      @Query("minCreateDate") minCreateDate: Date? = null,
-      @Query("maxCreateDate") maxCreateDate: Date? = null,
-      @Query("minEndDate") minEndDate: Date? = null,
-      @Query("maxEndDate") maxEndDate: Date? = null,
+      @Query("take") take: Int? = 10,
+      @Query("minCreateDate") minCreateDate: String? = null,
+      @Query("maxCreateDate") maxCreateDate: String? = null,
+      @Query("minEndDate") minEndDate: String? = null,
+      @Query("maxEndDate") maxEndDate: String? = null,
       @Query("executor") executorId: String? = null,
       @Query("creator") creatorId: String? = null,
-      @Query("theme") theme: String? = null
+      @Query("theme") theme: String? = null,
+      @Query("completed") completed: String? = null
     ): Response<Speeches>
 
     @Multipart

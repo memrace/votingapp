@@ -16,7 +16,8 @@ import java.util.*
 class VotingFragment : Fragment() {
   private var _binding: FragmentVotingBinding? = null
   private val binding get() = _binding!!
-  private lateinit var viewModel: VotingViewModel
+  private lateinit var viewModel: VotingIViewModel
+
   override fun onCreateView(
     inflater: LayoutInflater, container: ViewGroup?,
     savedInstanceState: Bundle?
@@ -24,15 +25,16 @@ class VotingFragment : Fragment() {
     _binding = FragmentVotingBinding.inflate(layoutInflater, container, false)
     viewModel = (activity as AppActivity).votingViewModel
     binding.viewmodel = viewModel
+    // For livedata
     binding.lifecycleOwner = this
     binding.executePendingBindings()
+    viewModel.loading.value = true
     (activity as AppActivity).showSearch(false)
     return binding.root
   }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    viewModel.loading.value = true
     viewModel.loadVotingList().observe(viewLifecycleOwner, {
       viewModel.loading.value = false
       if (it != null) {

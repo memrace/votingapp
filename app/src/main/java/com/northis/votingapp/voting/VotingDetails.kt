@@ -17,7 +17,7 @@ import com.northis.votingapp.databinding.SpeechInVotingListViewHolderBinding
 class VotingDetails : Fragment() {
   private var _binding: FragmentVotingDetailsBinding? = null
   private val binding get() = _binding!!
-  private lateinit var viewModel: VotingViewModel
+  private lateinit var viewModel: VotingIViewModel
   private lateinit var votingSpeechesAdapter: VotingSpeechesAdapter
   override fun onCreateView(
     inflater: LayoutInflater, container: ViewGroup?,

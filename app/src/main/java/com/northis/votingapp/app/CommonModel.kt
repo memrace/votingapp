@@ -49,12 +49,29 @@ class CommonModel @Inject constructor(private val context: Context, private val 
     val Creator: IdentityUser,
     val Description: String,
     val Theme: String,
-    val Status: String?,
+    private val Status: String?,
     val SpeechDate: Date?,
     val SourceLinks: String?,
     val Executor: IdentityUser?,
     val IsCompleted: Boolean?
-  )
+  ) {
+    val SpeechStatus
+      get() = when (Status) {
+        SpeechStatuses.InCatalog -> "Каталог"
+        SpeechStatuses.InCalendar -> "Календарь"
+        SpeechStatuses.InVoting -> "Голосование"
+	else -> "NaN"
+      }
+
+  }
+
+  class SpeechStatuses {
+    companion object {
+      const val InCalendar: String = "InCalendar"
+      const val InCatalog: String = "InCatalog"
+      const val InVoting: String = "InVoting"
+    }
+  }
 
   interface IProfileApi {
     @GET("$SERVICE{uuid}")
