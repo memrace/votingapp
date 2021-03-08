@@ -1,6 +1,7 @@
 package com.northis.votingapp.app
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -129,6 +130,31 @@ class AppActivity : AppCompatActivity() {
 
     topAppBar.setupWithNavController(navController, appBarConfiguration)
     navigationView.setupWithNavController(navController)
+    val id = binding.topAppBar.menu.findItem(R.id.app_bar_search).itemId
+    val menu = binding.topAppBar.menu
+    binding.topAppBar.setOnMenuItemClickListener { menuItem ->
+      when (menuItem.itemId) {
+        R.id.app_bar_search -> {
+          true
+        }
+	else -> {
+          false
+        }
+      }
+    }
+  }
+
+
+  fun setAppBarSearchListener(func: () -> Boolean) {
+    binding.topAppBar.setOnMenuItemClickListener {
+      when (it.itemId) {
+        R.id.app_bar_search -> {
+          Log.d("work", "work")
+          return@setOnMenuItemClickListener true
+        }
+	else -> return@setOnMenuItemClickListener false
+      }
+    }
   }
 
   fun showSearch(flag: Boolean) {
